@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
+
+import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -20,7 +23,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        ImageView ingredientsIv = findViewById(R.id.image_iv);
+        ImageView imageview = findViewById(R.id.image_iv);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -43,10 +46,10 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        populateUI();
+        populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
-                .into(ingredientsIv);
+                .into(imageview);
 
         setTitle(sandwich.getMainName());
     }
@@ -56,7 +59,38 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI() {
+    private void populateUI(Sandwich sandwich) {
+        TextView originTv = findViewById(R.id.origin_tv);
+        TextView descriptionTv = findViewById(R.id.description_tv);
+        TextView ingredientsTv = findViewById(R.id.ingredients_tv);
+        TextView alsoKnownTv = findViewById(R.id.also_known_tv);
+        originTv.setText(sandwich.getPlaceOfOrigin());
+        descriptionTv.setText(sandwich.getDescription());
+        ingredientsTv.setText(getStringWithNewLineFromList(sandwich.getIngredients()));
+        alsoKnownTv.setText(getStringWithCommaFromList(sandwich.getAlsoKnownAs()));
 
+
+    }
+
+    private String getStringWithCommaFromList(List<String> stringList){
+        StringBuilder result = new StringBuilder();
+        if(stringList.size()>0){
+            for(int i=0;i<stringList.size()-1;i++){
+                result.append(stringList.get(i)).append(", ");
+            }
+            result.append(stringList.get(stringList.size()-1));
+        }
+        return result.toString();
+    }
+
+    private String getStringWithNewLineFromList(List<String> stringList){
+        StringBuilder result = new StringBuilder();
+        if(stringList.size()>0){
+            for(int i=0;i<stringList.size()-1;i++){
+                result.append(stringList.get(i)).append("\n");
+            }
+            result.append(stringList.get(stringList.size()-1));
+        }
+        return result.toString();
     }
 }
